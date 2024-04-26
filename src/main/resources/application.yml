@@ -1,3 +1,27 @@
 spring:
   application:
     name: candy_shop
+  liquibase:
+    enabled: false
+  datasource:
+    url: jdbc:postgresql://localhost:5432/candyshop
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+    show-sql: false
+
+server:
+  port: 8080
+
+logging:
+  config: classpath:log4j2-plain.xml
+
+minio:
+  bucket: products
+  url: http://localhost:9000
+  access_key: minioadmin
+  secret_key: minioadmin

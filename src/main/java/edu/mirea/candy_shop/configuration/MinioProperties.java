@@ -1,2 +1,15 @@
-package edu.mirea.candy_shop.configuration;public class MinioProperties {
+package edu.mirea.candy_shop.configuration;
+
+import lombok.Data;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
+
+@ConfigurationProperties(prefix = "minio", ignoreUnknownFields = false)
+@Configuration
+@Data
+public class MinioProperties {
+    private String bucket;
+    private String url;
+    private String accessKey;
+    private String secretKey;
 }
