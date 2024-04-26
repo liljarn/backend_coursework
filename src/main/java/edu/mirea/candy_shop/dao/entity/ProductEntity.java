@@ -1,13 +1,13 @@
 package edu.mirea.candy_shop.dao.entity;
 
-import edu.mirea.candy_shop.dto.ProductDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.net.URI;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "products")
@@ -31,6 +31,12 @@ public class ProductEntity {
     private int price;
 
     private long amount = 0;
+
+    @ManyToMany(mappedBy = "cartProducts", fetch = FetchType.LAZY)
+    private Set<CustomerEntity> customers = new HashSet<>();
+
+    @ManyToMany(mappedBy = "favoriteProducts", fetch = FetchType.LAZY)
+    private Set<CustomerEntity> customersFav = new HashSet<>();
 
     public ProductEntity(String productName, String description, int price, long amount) {
         this.productName = productName;

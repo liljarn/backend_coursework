@@ -1,4 +1,4 @@
-package edu.mirea.candy_shop.configuration;
+package edu.mirea.candy_shop.configuration.minio;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;

@@ -1,4 +1,4 @@
-package edu.mirea.candy_shop.configuration;
+package edu.mirea.candy_shop.configuration.minio;
 
 import io.minio.MinioClient;
 import org.springframework.context.annotation.Bean;
