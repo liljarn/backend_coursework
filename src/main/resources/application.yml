@@ -25,3 +25,8 @@ minio:
   url: http://localhost:9000
   access_key: minioadmin
   secret_key: minioadmin
+
+token:
+  secret:
+    key: 48a868a4042f634ac04a117f00a87202131dd7c46c4b32c4acb3edc5e15f4511
+  expiration: 3600000
