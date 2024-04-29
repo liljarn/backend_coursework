@@ -6,18 +6,26 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 public class CustomerService {
     private final CustomerRepository customerRepository;
 
+    @Transactional
     public UserDetailsService userDetailsService() {
         return username -> customerRepository.findByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }
 
+    @Transactional
     public CustomerEntity save(CustomerEntity newUser) {
         return customerRepository.save(newUser);
+    }
+
+    @Transactional(readOnly = true)
+    public CustomerEntity getCustomer(String email) {
+        return customerRepository.findByEmail(email).orElseThrow(RuntimeException::new);
     }
 }

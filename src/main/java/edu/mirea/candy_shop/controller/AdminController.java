@@ -1,6 +1,7 @@
 package edu.mirea.candy_shop.controller;
 
-import edu.mirea.candy_shop.dto.requests.AddProductRequest;
+import edu.mirea.candy_shop.dto.requests.AddNewProductRequest;
+import edu.mirea.candy_shop.dto.requests.ProductRequest;
 import edu.mirea.candy_shop.service.PictureService;
 import edu.mirea.candy_shop.service.ProductService;
 import lombok.RequiredArgsConstructor;
@@ -17,12 +18,17 @@ public class AdminController {
     private final ProductService productService;
     private final PictureService pictureService;
 
-    @CrossOrigin(origins = "http://127.0.0.1:5500")
     @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})
     @SneakyThrows
-    public void addProduct(@ModelAttribute AddProductRequest request) {
-        pictureService.putPicture(request.productName(), request.image().getInputStream());
+    public void addProduct(@ModelAttribute AddNewProductRequest request) {
+        pictureService.putProductPicture(request.productName(), request.image().getInputStream());
         productService.addProduct(request);
-        log.info(request);
+    }
+
+    @DeleteMapping
+    @SneakyThrows
+    public void deleteProduct(@RequestBody ProductRequest request) {
+        String name = productService.deleteProduct(request.productId());
+        pictureService.deleteProductPicture(name);
     }
 }

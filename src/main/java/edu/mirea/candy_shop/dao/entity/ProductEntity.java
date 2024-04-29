@@ -32,8 +32,9 @@ public class ProductEntity {
 
     private long amount = 0;
 
-    @ManyToMany(mappedBy = "cartProducts", fetch = FetchType.LAZY)
-    private Set<CustomerEntity> customers = new HashSet<>();
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "product_id")
+    private Set<CartProductEntity> carts = new HashSet<>();
 
     @ManyToMany(mappedBy = "favoriteProducts", fetch = FetchType.LAZY)
     private Set<CustomerEntity> customersFav = new HashSet<>();

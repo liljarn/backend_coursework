@@ -45,15 +45,15 @@ public class SecurityConfiguration {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
-                .cors(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.POST, "/api/signup", "/api/signin").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api", "/api/products", "/api/comment").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/admin").hasRole("ADMIN")
-                        .anyRequest().permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/api/admin").hasRole("ADMIN")
+                        .anyRequest().hasRole("USER")
                 )
                 .authenticationProvider(authenticationProvider()).addFilterBefore(
                         jwtAuthenticationFilter,

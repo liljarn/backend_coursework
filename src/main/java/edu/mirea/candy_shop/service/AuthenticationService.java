@@ -1,16 +1,18 @@
 package edu.mirea.candy_shop.service;
 
+import edu.mirea.candy_shop.dao.entity.CartEntity;
 import edu.mirea.candy_shop.dao.entity.CustomerEntity;
 import edu.mirea.candy_shop.dao.repository.CustomerRepository;
-import edu.mirea.candy_shop.dto.JwtAuthenticationResponse;
 import edu.mirea.candy_shop.dto.Role;
 import edu.mirea.candy_shop.dto.requests.SignInRequest;
 import edu.mirea.candy_shop.dto.requests.SignUpRequest;
+import edu.mirea.candy_shop.dto.response.JwtAuthenticationResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -21,6 +23,7 @@ public class AuthenticationService {
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
 
+    @Transactional
     public JwtAuthenticationResponse signup(SignUpRequest request) {
         CustomerEntity customer = CustomerEntity.builder()
                 .customerName(request.customerName())
@@ -31,11 +34,13 @@ public class AuthenticationService {
                 .build();
 
         customer = customerService.save(customer);
+        CartEntity cart = new CartEntity(customer.getCustomerId(), customer);
+        customer.setCart(cart);
         var jwt = jwtService.generateToken(customer);
         return new JwtAuthenticationResponse(jwt);
     }
 
-
+    @Transactional
     public JwtAuthenticationResponse signin(SignInRequest request) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.email(), request.password()));
@@ -45,4 +50,8 @@ public class AuthenticationService {
         return new JwtAuthenticationResponse(jwt);
     }
 
+    @Transactional(readOnly = true)
+    public boolean isAuthorized(String token) {
+        return jwtService.isTokenExpired(token);
+    }
 }

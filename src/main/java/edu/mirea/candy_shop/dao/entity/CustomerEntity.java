@@ -37,28 +37,24 @@ public class CustomerEntity implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "favorite_products",
             joinColumns = @JoinColumn(name = "customer_id"),
             inverseJoinColumns = @JoinColumn(name = "product_id"))
     private Set<ProductEntity> favoriteProducts = new HashSet<>();
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    @JoinTable(name = "cart_products",
-            joinColumns = @JoinColumn(name = "customer_id"),
-            inverseJoinColumns = @JoinColumn(name = "product_id"))
-    private List<ProductEntity> cartProducts = new ArrayList<>();
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @PrimaryKeyJoinColumn
+    private CartEntity cart;
+
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
+    private List<CommentEntity> comments = new ArrayList<>();
 
     public CustomerEntity(String customerName, String customerSurname, String email, String password) {
         this.customerName = customerName;
         this.customerSurname = customerSurname;
         this.email = email;
         this.password = password;
-    }
-
-    public void addProductToCart(ProductEntity product) {
-        cartProducts.add(product);
-        product.getCustomers().add(this);
     }
 
     public void addProductToFavorite(ProductEntity product) {

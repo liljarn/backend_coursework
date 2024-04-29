@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Configuration;
 @Data
 public class MinioProperties {
     private String bucket;
+    private String comment;
     private String url;
     private String accessKey;
     private String secretKey;
