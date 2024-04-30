@@ -37,7 +37,7 @@ public class CustomerEntity implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(name = "favorite_products",
             joinColumns = @JoinColumn(name = "customer_id"),
             inverseJoinColumns = @JoinColumn(name = "product_id"))
@@ -49,6 +49,9 @@ public class CustomerEntity implements UserDetails {
 
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
     private List<CommentEntity> comments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
+    private List<OrderEntity> orders = new ArrayList<>();
 
     public CustomerEntity(String customerName, String customerSurname, String email, String password) {
         this.customerName = customerName;

@@ -7,6 +7,7 @@ import edu.mirea.candy_shop.dto.Role;
 import edu.mirea.candy_shop.dto.requests.SignInRequest;
 import edu.mirea.candy_shop.dto.requests.SignUpRequest;
 import edu.mirea.candy_shop.dto.response.JwtAuthenticationResponse;
+import edu.mirea.candy_shop.exception.CustomerNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -53,5 +54,12 @@ public class AuthenticationService {
     @Transactional(readOnly = true)
     public boolean isAuthorized(String token) {
         return jwtService.isTokenExpired(token);
+    }
+
+    @Transactional(readOnly = true)
+    public boolean isAdmin(String token) {
+        String email = jwtService.extractUserName(token);
+        CustomerEntity customer = customerRepository.findByEmail(email).orElseThrow(CustomerNotFoundException::new);
+        return customer.getRole().equals(Role.ROLE_ADMIN);
     }
 }

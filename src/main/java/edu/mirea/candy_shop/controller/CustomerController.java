@@ -1,6 +1,5 @@
 package edu.mirea.candy_shop.controller;
 
-import edu.mirea.candy_shop.dao.entity.CustomerEntity;
 import edu.mirea.candy_shop.dto.CustomerData;
 import edu.mirea.candy_shop.service.CustomerService;
 import edu.mirea.candy_shop.service.JwtService;
@@ -22,7 +21,6 @@ public class CustomerController {
     @GetMapping
     public CustomerData getCustomerData(@RequestHeader(TOKEN) String token) {
         String email = jwtService.extractUserName(token);
-        CustomerEntity customer = customerService.getCustomer(email);
-        return new CustomerData(customer.getCustomerName(), customer.getCustomerSurname(), customer.getEmail());
+        return customerService.getCustomer(email);
     }
 }

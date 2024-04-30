@@ -1,4 +1,4 @@
-package edu.mirea.candy_shop.dao.entity;
+package edu.mirea.candy_shop.dao.entity.link_tables;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
@@ -11,9 +11,9 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CartProductId implements Serializable {
-    @Column(name = "cart_id", nullable = false)
+    @Column(name = "cart_id")
     private Long cartId;
 
-    @Column(name = "product_id", nullable = false)
+    @Column(name = "product_id")
     private Long productId;
 }

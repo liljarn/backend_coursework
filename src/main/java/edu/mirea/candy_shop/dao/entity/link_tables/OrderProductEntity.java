@@ -1,5 +1,7 @@
-package edu.mirea.candy_shop.dao.entity;
+package edu.mirea.candy_shop.dao.entity.link_tables;
 
+import edu.mirea.candy_shop.dao.entity.OrderEntity;
+import edu.mirea.candy_shop.dao.entity.ProductEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,29 +9,29 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "cart_product")
+@Table(name = "order_product")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CartProductEntity {
+public class OrderProductEntity {
     @EmbeddedId
-    private CartProductId id;
+    private OrderProductId id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @MapsId("cartId")
-    @JoinColumn(name = "cart_id", nullable = false)
-    private CartEntity cart;
+    @MapsId("orderId")
+    @JoinColumn(name = "order_id")
+    private OrderEntity order;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("productId")
-    @JoinColumn(name = "product_id", nullable = false)
+    @JoinColumn(name = "product_id")
     private ProductEntity product;
 
     @Column(name = "quantity", nullable = false)
     private Long quantity = 0L;
 
-    public CartProductEntity(CartProductId id) {
+    public OrderProductEntity(OrderProductId id) {
         this.id = id;
     }
 }

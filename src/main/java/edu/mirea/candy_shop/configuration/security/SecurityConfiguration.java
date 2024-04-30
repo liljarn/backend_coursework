@@ -50,9 +50,10 @@ public class SecurityConfiguration {
                 )
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.POST, "/api/signup", "/api/signin").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/api", "/api/products", "/api/comment").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api", "/api/products", "/api/comment/all").permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/admin").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE, "/api/admin").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/isadmin").hasAnyRole("ADMIN", "USER")
                         .anyRequest().hasRole("USER")
                 )
                 .authenticationProvider(authenticationProvider()).addFilterBefore(

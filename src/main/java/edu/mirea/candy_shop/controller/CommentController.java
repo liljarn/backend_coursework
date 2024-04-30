@@ -5,12 +5,10 @@ import edu.mirea.candy_shop.dto.requests.AddCommentRequest;
 import edu.mirea.candy_shop.dto.requests.DeleteCommentRequest;
 import edu.mirea.candy_shop.service.CommentService;
 import edu.mirea.candy_shop.service.JwtService;
-import edu.mirea.candy_shop.service.PictureService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -19,18 +17,16 @@ import java.util.List;
 public class CommentController {
     private final JwtService jwtService;
     private final CommentService commentService;
-    private final PictureService pictureService;
+
+    @GetMapping("/all")
+    public List<CommentDto> getAllComments() {
+        return commentService.getAllComments();
+    }
 
     @GetMapping
     public List<CommentDto> getComments(@RequestHeader("Token") String token) {
         String email = jwtService.extractUserName(token);
-        return commentService.getComments(email).stream().map(entity ->
-                new CommentDto(
-                        entity.getCustomerName(),
-                        entity.getComment(),
-                        URI.create(pictureService.getLinkOnCommentPicture(entity.getCommentId())),
-                        entity.getRate())
-        ).toList();
+        return commentService.getComments(email);
     }
 
     @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE})

@@ -28,6 +28,22 @@ services:
     networks:
       - backend
 
+#  chocshock:
+#    build:
+#      context: .
+#      dockerfile: Dockerfile
+#    ports:
+#      - "8080:8080"
+#    depends_on:
+#      - postgresql
+#      - liquibase-migrations
+#    environment:
+#      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgresql:5432/candyshop
+#      - SPRING_DATASOURCE_USERNAME=postgres
+#      - SPRING_DATASOURCE_PASSWORD=postgres
+#    networks:
+#      - backend
+
   minio:
     image: docker.io/bitnami/minio:latest
     ports:

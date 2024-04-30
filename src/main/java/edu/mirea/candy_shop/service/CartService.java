@@ -1,9 +1,14 @@
 package edu.mirea.candy_shop.service;
 
-import edu.mirea.candy_shop.dao.entity.*;
+import edu.mirea.candy_shop.dao.entity.CartEntity;
+import edu.mirea.candy_shop.dao.entity.CustomerEntity;
+import edu.mirea.candy_shop.dao.entity.ProductEntity;
+import edu.mirea.candy_shop.dao.entity.link_tables.CartProductEntity;
+import edu.mirea.candy_shop.dao.entity.link_tables.CartProductId;
 import edu.mirea.candy_shop.dao.repository.CartProductRepository;
 import edu.mirea.candy_shop.dao.repository.CustomerRepository;
 import edu.mirea.candy_shop.dao.repository.ProductRepository;
+import edu.mirea.candy_shop.dto.CartProductDto;
 import edu.mirea.candy_shop.exception.CustomerNotFoundException;
 import edu.mirea.candy_shop.exception.ProductIsOutException;
 import lombok.RequiredArgsConstructor;
@@ -11,8 +16,9 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.net.URI;
+import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -21,6 +27,7 @@ public class CartService {
     private final CustomerRepository customerRepository;
     private final ProductRepository productRepository;
     private final CartProductRepository cartProductRepository;
+    private final PictureService pictureService;
 
     @Transactional
     public void addCartProduct(String email, Long productId) {
@@ -32,9 +39,6 @@ public class CartService {
         CartEntity cart = customer.getCart();
         CartProductId cartProductId = new CartProductId(cart.getCartId(), productId);
         Optional<CartProductEntity> cartProduct = cartProductRepository.findById(cartProductId);
-//        Optional<CartProductEntity> cartProduct = cart.getProductsInCart().stream()
-//                .filter(cartProductEntity -> cartProductEntity.getProduct().equals(product))
-//                .findFirst();
         if (cartProduct.isEmpty()) {
             CartProductEntity cartProductEntity = addNewProduct(cart, product);
             cartProductEntity.setQuantity(cartProductEntity.getQuantity() + 1);
@@ -68,8 +72,9 @@ public class CartService {
         CartProductEntity cartProduct = cartProductRepository.findById(new CartProductId(cart.getCartId(), productId))
                 .orElseThrow(RuntimeException::new);
         product.setAmount(product.getAmount() + cartProduct.getQuantity());
-        product.getCarts().remove(cartProduct);
-        cart.getProductsInCart().remove(cartProduct);
+//        product.getCarts().remove(cartProduct);
+//        cart.getProductsInCart().remove(cartProduct);
+
         cartProductRepository.delete(cartProduct);
     }
 
@@ -86,10 +91,20 @@ public class CartService {
     }
 
     @Transactional
-    public Set<CartProductEntity> getCart(String email) {
+    public List<CartProductDto> getCart(String email) {
         CustomerEntity customer = customerRepository.findByEmail(email).orElseThrow(CustomerNotFoundException::new);
         CartEntity cart = customer.getCart();
-        return cart.getProductsInCart();
+        return cart.getProductsInCart().stream()
+                .map(entity -> {
+                    ProductEntity product = entity.getProduct();
+                    return new CartProductDto(
+                            product.getProductId(),
+                            product.getProductName(),
+                            product.getPrice(),
+                            entity.getQuantity(),
+                            URI.create(pictureService.getLinkOnPicture(product.getProductName()))
+                    );
+                }).toList();
     }
 
     private CartProductEntity addNewProduct(CartEntity cart, ProductEntity product) {

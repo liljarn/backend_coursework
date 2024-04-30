@@ -4,22 +4,34 @@ import edu.mirea.candy_shop.dao.entity.CustomerEntity;
 import edu.mirea.candy_shop.dao.entity.ProductEntity;
 import edu.mirea.candy_shop.dao.repository.CustomerRepository;
 import edu.mirea.candy_shop.dao.repository.ProductRepository;
+import edu.mirea.candy_shop.dto.ProductDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Set;
+import java.net.URI;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class FavoriteProductService {
     private final CustomerRepository customerRepository;
     private final ProductRepository productRepository;
+    private final PictureService pictureService;
 
     @Transactional(readOnly = true)
-    public Set<ProductEntity> getFavoriteProducts(String email) {
+    public List<ProductDto> getFavoriteProducts(String email) {
         CustomerEntity customer = customerRepository.findByEmail(email).orElseThrow(RuntimeException::new);
-        return customer.getFavoriteProducts();
+        return customer.getFavoriteProducts().stream().map(entity ->
+                new ProductDto(
+                        entity.getProductId(),
+                        entity.getProductName(),
+                        entity.getDescription(),
+                        entity.getPrice(),
+                        entity.getAmount(),
+                        URI.create(pictureService.getLinkOnPicture(entity.getProductName()))
+                )
+        ).toList();
     }
 
     @Transactional(readOnly = true)

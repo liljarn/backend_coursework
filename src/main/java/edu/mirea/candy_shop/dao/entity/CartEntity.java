@@ -1,5 +1,6 @@
 package edu.mirea.candy_shop.dao.entity;
 
+import edu.mirea.candy_shop.dao.entity.link_tables.CartProductEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -17,7 +18,7 @@ import java.util.Set;
 @AllArgsConstructor
 public class CartEntity {
     @Id
-    @Column(name = "cart_id", nullable = false)
+    @Column(name = "cart_id")
     private Long cartId;
 
     @MapsId
@@ -25,7 +26,7 @@ public class CartEntity {
     @JoinColumn(name = "cart_id")
     private CustomerEntity customer;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @JoinColumn(name = "cart_id")
     private Set<CartProductEntity> productsInCart = new HashSet<>();
 

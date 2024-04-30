@@ -2,6 +2,8 @@ package edu.mirea.candy_shop.service;
 
 import edu.mirea.candy_shop.dao.entity.CustomerEntity;
 import edu.mirea.candy_shop.dao.repository.CustomerRepository;
+import edu.mirea.candy_shop.dto.CustomerData;
+import edu.mirea.candy_shop.exception.CustomerNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -25,7 +27,8 @@ public class CustomerService {
     }
 
     @Transactional(readOnly = true)
-    public CustomerEntity getCustomer(String email) {
-        return customerRepository.findByEmail(email).orElseThrow(RuntimeException::new);
+    public CustomerData getCustomer(String email) {
+        CustomerEntity customer = customerRepository.findByEmail(email).orElseThrow(CustomerNotFoundException::new);
+        return new CustomerData(customer.getCustomerName(), customer.getCustomerSurname(), customer.getEmail());
     }
 }
