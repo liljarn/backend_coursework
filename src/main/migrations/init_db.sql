@@ -5,6 +5,7 @@ CREATE TABLE IF NOT EXISTS products
     description     TEXT            NOT NULL,
     price           INT             NOT NULL,
     amount          BIGINT          DEFAULT 0,
+    removed         BOOLEAN         DEFAULT FALSE,
 
     UNIQUE (product_name),
     PRIMARY KEY (product_id)

@@ -36,6 +36,9 @@ public class ProductEntity {
 
     private long amount = 0;
 
+    @Column(nullable = false)
+    private boolean removed = false;
+
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "product_id")
     private Set<CartProductEntity> carts = new HashSet<>();
