@@ -1,6 +1,7 @@
 package edu.mirea.candy_shop.dto;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 
-public record OrderDto(List<OrderProductDto> orderProduct, long price) {
+public record OrderDto(List<OrderProductDto> orderProduct, long price, long orderId, OffsetDateTime orderTime) {
 }

@@ -56,11 +56,12 @@ public class CommentService {
                 commentRequest.comment(),
                 commentRequest.rate()
         );
+        comment.setCustomer(customer);
         commentRepository.save(comment);
         pictureService.putCommentPicture(comment.getCommentId(), commentRequest.image().getInputStream());
         customer.getComments().add(comment);
-        comment.setCustomer(customer);
     }
+
 
     @Transactional
     public void deleteComment(String email, Long commentId) {

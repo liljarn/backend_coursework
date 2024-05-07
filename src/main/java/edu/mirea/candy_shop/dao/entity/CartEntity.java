@@ -21,6 +21,9 @@ public class CartEntity {
     @Column(name = "cart_id")
     private Long cartId;
 
+    @Column(name = "customer_id")
+    private Long customerId;
+
     @MapsId
     @OneToOne
     @JoinColumn(name = "cart_id")
@@ -30,8 +33,9 @@ public class CartEntity {
     @JoinColumn(name = "cart_id")
     private Set<CartProductEntity> productsInCart = new HashSet<>();
 
-    public CartEntity(Long cartId, CustomerEntity customer) {
+    public CartEntity(Long cartId, Long customerId, CustomerEntity customer) {
         this.cartId = cartId;
+        this.customerId = customerId;
         this.customer = customer;
     }
 }

@@ -25,7 +25,10 @@ CREATE TABLE IF NOT EXISTS customer
 
 CREATE TABLE IF NOT EXISTS cart
 (
-    cart_id     BIGINT,
+    cart_id         BIGINT,
+    customer_id     BIGINT,
+
+    FOREIGN KEY (customer_id) REFERENCES customer(customer_id),
     PRIMARY KEY (cart_id)
 );
 
@@ -64,9 +67,10 @@ CREATE TABLE IF NOT EXISTS comment
 
 CREATE TABLE IF NOT EXISTS orders
 (
-    order_id        BIGINT      GENERATED ALWAYS AS IDENTITY,
-    customer_id     BIGINT      NOT NULL,
-    price           BIGINT      NOT NULL,
+    order_id            BIGINT                              GENERATED ALWAYS AS IDENTITY,
+    customer_id         BIGINT                              NOT NULL,
+    price               BIGINT                              NOT NULL,
+    order_time    TIMESTAMP WITH TIME ZONE            DEFAULT CURRENT_TIMESTAMP,
 
     FOREIGN KEY (customer_id) REFERENCES customer(customer_id),
     PRIMARY KEY (order_id)

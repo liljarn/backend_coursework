@@ -35,7 +35,7 @@ public class AuthenticationService {
                 .build();
 
         customer = customerService.save(customer);
-        CartEntity cart = new CartEntity(customer.getCustomerId(), customer);
+        CartEntity cart = new CartEntity(customer.getCustomerId(), customer.getCustomerId(), customer);
         customer.setCart(cart);
         var jwt = jwtService.generateToken(customer);
         return new JwtAuthenticationResponse(jwt);
@@ -53,7 +53,7 @@ public class AuthenticationService {
 
     @Transactional(readOnly = true)
     public boolean isAuthorized(String token) {
-        return jwtService.isTokenExpired(token);
+        return !jwtService.isTokenExpired(token);
     }
 
     @Transactional(readOnly = true)

@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,6 +28,9 @@ public class OrderEntity {
     private CustomerEntity customer;
 
     private long price = 0L;
+
+    @Column(name = "order_time")
+    private OffsetDateTime orderTime = OffsetDateTime.now();
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "order_id")

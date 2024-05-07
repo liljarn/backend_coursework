@@ -42,7 +42,9 @@ public class OrderService {
                                                 )))
                                 )
                                 .toList(),
-                        order.getPrice())
+                        order.getPrice(),
+                        order.getOrderId(),
+                        order.getOrderTime())
                 ).toList();
     }
 
@@ -67,5 +69,4 @@ public class OrderService {
             return orderProduct;
         }).toList());
     }
-
 }
