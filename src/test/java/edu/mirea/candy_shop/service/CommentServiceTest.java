@@ -8,6 +8,7 @@ import edu.mirea.candy_shop.dto.CommentDto;
 import edu.mirea.candy_shop.dto.requests.AddCommentRequest;
 import edu.mirea.candy_shop.exception.CustomerNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -42,6 +43,7 @@ public class CommentServiceTest {
 
     @BeforeEach
     void setUp() {
+        // Arrange
         MockitoAnnotations.openMocks(this);
         customer = new CustomerEntity();
         customer.setEmail("test@example.com");
@@ -58,37 +60,50 @@ public class CommentServiceTest {
     }
 
     @Test
-    void getAllComments_ReturnsAllComments() {
+    @DisplayName("CommentService#getAllComments test")
+    void getAllComments_shouldReturnAllComments() {
+        // Arrange
         when(customerRepository.findAll()).thenReturn(List.of(customer));
         when(pictureService.getLinkOnCommentPicture(any())).thenReturn("dummy");
         List<CommentDto> expectedComments = new ArrayList<>();
         expectedComments.add(new CommentDto("John", "Test comment", URI.create("dummy"), 5));
+        // Act
         List<CommentDto> actualComments = commentService.getAllComments();
+        // Assert
         assertThat(actualComments).isEqualTo(expectedComments);
     }
 
     @Test
-    void getComments_ReturnsCustomerComments() {
+    @DisplayName("CommentService#getComments test")
+    void getComments_shouldReturnCustomerComments() {
+        // Arrange
         when(customerRepository.findByEmail("test@example.com")).thenReturn(Optional.of(customer));
         when(pictureService.getLinkOnCommentPicture(any())).thenReturn("dummy");
         List<CommentDto> expectedComments = new ArrayList<>();
         expectedComments.add(new CommentDto("John", "Test comment", URI.create("dummy"), 5));
+        // Act
         List<CommentDto> actualComments = commentService.getComments("test@example.com");
+        // Assert
         assertThat(actualComments).isEqualTo(expectedComments);
     }
 
     @Test
-    void addComment_SuccessfullyAdded() {
+    @DisplayName("CommentService#addComment test")
+    void addComment_shouldSuccessfullyAddNewComment() {
+        // Arrange
         AddCommentRequest commentRequest = new AddCommentRequest("John", "Test comment", 5,
                 new MockMultipartFile("image", new byte[0]));
         when(customerRepository.findByEmail("test@example.com")).thenReturn(Optional.of(customer));
         when(commentRepository.save(any())).thenReturn(comment);
+        // Act
         commentService.addComment("test@example.com", commentRequest);
+        // Assert
         assertThat(customer.getComments()).contains(comment);
     }
 
     @Test
-    void deleteComment_SuccessfullyDeleted() {
+    @DisplayName("CommentService#deleteComment test")
+    void deleteComment_shouldSuccessfullyDeleteComment() {
         when(commentRepository.findById(1L)).thenReturn(Optional.of(comment));
         when(customerRepository.findByEmail("test@example.com")).thenReturn(Optional.of(customer));
         commentService.deleteComment("test@example.com", 1L);
@@ -96,7 +111,8 @@ public class CommentServiceTest {
     }
 
     @Test
-    void deleteComment_ThrowsExceptionWhenCommentNotFound() {
+    @DisplayName("CommentService#deleteComment bad comment id test")
+    void deleteComment_shouldThrowException_whenCommentNotFound() {
         when(commentRepository.findById(1L)).thenReturn(Optional.empty());
         when(customerRepository.findByEmail("test@example.com")).thenReturn(Optional.of(customer));
         assertThatThrownBy(() -> commentService.deleteComment("test@example.com", 1L))
@@ -104,7 +120,8 @@ public class CommentServiceTest {
     }
 
     @Test
-    void deleteComment_ThrowsExceptionWhenCustomerNotFound() {
+    @DisplayName("CommentService#deleteComment bad email test")
+    void deleteComment_shouldThrowException_whenCustomerNotFound() {
         when(commentRepository.findById(1L)).thenReturn(Optional.of(comment));
         when(customerRepository.findByEmail("test@example.com")).thenReturn(Optional.empty());
         assertThatThrownBy(() -> commentService.deleteComment("test@example.com", 1L))

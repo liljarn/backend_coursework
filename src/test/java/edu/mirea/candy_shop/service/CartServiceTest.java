@@ -11,6 +11,7 @@ import edu.mirea.candy_shop.dao.repository.ProductRepository;
 import edu.mirea.candy_shop.dto.CartProductDto;
 import edu.mirea.candy_shop.exception.ProductIsOutException;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -48,6 +49,7 @@ public class CartServiceTest {
 
     @BeforeEach
     void setUp() {
+        // Arrange
         MockitoAnnotations.openMocks(this);
         customer = new CustomerEntity();
         customer.setEmail("test@example.com");
@@ -70,51 +72,73 @@ public class CartServiceTest {
     }
 
     @Test
-    void addCartProduct_SuccessfullyAdded() {
+    @DisplayName("CartService#addCartProduct test")
+    void addCartProduct_shouldSuccessfullyAddProductInCart() {
+        // Arrange
         when(customerRepository.findByEmail("test@example.com")).thenReturn(Optional.of(customer));
         when(productRepository.findById(1L)).thenReturn(Optional.of(product));
         when(cartProductRepository.findById(any())).thenReturn(Optional.empty());
+        // Act
         cartService.addCartProduct("test@example.com", 1L);
+        // Assert
         assertThat(cart.getProductsInCart()).hasSize(1);
     }
 
     @Test
-    void addCartProduct_ProductIsOutOfStock_ThrowsException() {
+    @DisplayName("CartService#addCartProduct test")
+    void addCartProduct_shouldThrowException_whenProductIsOutOfStock() {
+        // Arrange
         product.setAmount(0);
         when(customerRepository.findByEmail("test@example.com")).thenReturn(Optional.of(customer));
         when(productRepository.findById(1L)).thenReturn(Optional.of(product));
+        // Act & Assert
         assertThatThrownBy(() -> cartService.addCartProduct("test@example.com", 1L))
                 .isInstanceOf(ProductIsOutException.class);
     }
 
     @Test
-    void removeCartProduct_SuccessfullyRemoved() {
+    @DisplayName("CartService#removeCartProduct test")
+    void removeFromCart_shouldSuccessfullyRemoveAllProductsFromCart() {
+        // Arrange
         when(customerRepository.findByEmail("test@example.com")).thenReturn(Optional.of(customer));
         when(productRepository.findById(1L)).thenReturn(Optional.of(product));
         when(cartProductRepository.findById(any())).thenReturn(Optional.of(cartProduct));
+        // Act
         cartService.removeCartProduct("test@example.com", 1L);
+        // Assert
         assertThat(cart.getProductsInCart()).isEmpty();
     }
 
     @Test
-    void removeFromCart_SuccessfullyRemoved() {
+    @DisplayName("CartService#removeFromCart test")
+    void removeFromCart_shouldSuccessfullyRemoveProductFromCart() {
+        // Arrange
         when(customerRepository.findByEmail("test@example.com")).thenReturn(Optional.of(customer));
         when(productRepository.findById(1L)).thenReturn(Optional.of(product));
         when(cartProductRepository.findById(any())).thenReturn(Optional.of(cartProduct));
+        // Act
         cartService.removeFromCart("test@example.com", 1L);
+        // Assert
         assertThat(cart.getProductsInCart()).isEmpty();
     }
 
     @Test
-    void isInCart_ReturnsQuantity() {
+    @DisplayName("CartService#isInCart test")
+    void isInCart_shouldReturnProductQuantityInCart() {
+        // Arrange
         when(customerRepository.findByEmail("test@example.com")).thenReturn(Optional.of(customer));
         when(productRepository.findById(1L)).thenReturn(Optional.of(product));
         when(cartProductRepository.findById(any())).thenReturn(Optional.of(cartProduct));
-        assertThat(cartService.isInCart("test@example.com", 1L)).isEqualTo(2L);
+        // Act
+        long count = cartService.isInCart("test@example.com", 1L);
+        // Assert
+        assertThat(count).isEqualTo(2L);
     }
 
     @Test
-    void getCart_ReturnsCartProducts() {
+    @DisplayName("CartService#getCart test")
+    void getCart_shouldReturnProductsInCart() {
+        // Arrange
         Set<CartProductEntity> cartProducts = new HashSet<>();
         cartProducts.add(cartProduct);
         cart.setProductsInCart(cartProducts);
@@ -122,7 +146,9 @@ public class CartServiceTest {
         when(pictureService.getLinkOnPicture(any())).thenReturn("dummy");
         List<CartProductDto> expectedCartProducts = new ArrayList<>();
         expectedCartProducts.add(new CartProductDto(1L, "Product", 10, 2L, URI.create("dummy")));
+        // Act
         List<CartProductDto> actualCartProducts = cartService.getCart("test@example.com");
+        // Assert
         assertThat(actualCartProducts).isEqualTo(expectedCartProducts);
     }
 }
