@@ -6,6 +6,7 @@ import edu.mirea.candy_shop.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,6 +23,7 @@ public class ProductController {
     private final PictureService pictureService;
 
     @GetMapping
+    @CrossOrigin
     @SneakyThrows
     public List<ProductDto> getProducts() {
         return productService.getProducts().stream().map(entity ->
