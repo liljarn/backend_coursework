@@ -8,6 +8,7 @@ import edu.mirea.candy_shop.dto.Role;
 import edu.mirea.candy_shop.dto.requests.AddNewProductRequest;
 import edu.mirea.candy_shop.exception.ProductNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,7 +24,8 @@ public class ProductService {
 
     @Transactional(readOnly = true)
     public List<ProductEntity> getProducts() {
-        return productRepository.findAll().stream().filter(entity -> !entity.isRemoved()).toList();
+        return productRepository.findAll(Sort.by(Sort.Direction.ASC, "productId"))
+                .stream().filter(entity -> !entity.isRemoved()).toList();
     }
 
     @Transactional

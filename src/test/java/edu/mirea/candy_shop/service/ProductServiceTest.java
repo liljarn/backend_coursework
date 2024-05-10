@@ -7,6 +7,7 @@ import edu.mirea.candy_shop.dto.requests.AddNewProductRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+import org.springframework.data.domain.Sort;
 import org.springframework.mock.web.MockMultipartFile;
 
 import java.util.Collections;
@@ -20,7 +21,8 @@ public class ProductServiceTest {
     public void getProducts_shouldReturnProductsList() {
         // Arrange
         ProductRepository productRepository = Mockito.mock(ProductRepository.class);
-        Mockito.when(productRepository.findAll()).thenReturn(Collections.emptyList());
+        Mockito.when(productRepository.findAll(Sort.by(Sort.Direction.ASC, "productId")))
+                .thenReturn(Collections.emptyList());
         ProductService productService = new ProductService(
                 productRepository,
                 Mockito.mock(CustomerRepository.class),
@@ -33,7 +35,7 @@ public class ProductServiceTest {
 
         // Assert
         assertThat(products).isEmpty();
-        Mockito.verify(productRepository).findAll();
+        Mockito.verify(productRepository).findAll(Sort.by(Sort.Direction.ASC, "productId"));
     }
 
     @Test
