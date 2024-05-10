@@ -23,7 +23,7 @@ logging:
 minio:
   bucket: products
   comment: comments
-  url: http://localhost:9000
+  url: ${MINIO_URL:http://localhost:9000}
   access_key: minioadmin
   secret_key: minioadmin
 
